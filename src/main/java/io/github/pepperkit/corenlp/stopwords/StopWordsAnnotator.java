@@ -31,26 +31,26 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
      */
     public static final String ANNOTATOR_NAME = "stopwords";
 
-    private static final String CHECK_ONLY_LEMMAS_PROPERTY = "checkOnlyLemmas";
-    private static final String STOP_POS_CATEGORIES = "stopPosCategories";
-    private static final String STOP_ALL_WORDS_SHORTER_THAN = "stopAllWordsShorterThan";
-    private static final String STOP_ALL_LEMMAS_SHORTER_THAN = "stopAllLemmasShorterThan";
+    private static final String CHECK_ONLY_LEMMAS_PROPERTY = "checkOnlyLemmas"; // todo: do we need it at all?
+    private static final String STOP_POS_CATEGORIES = "withPosCategories";
+    private static final String STOP_ALL_WORDS_SHORTER_THAN = "shorterThan";
+    private static final String STOP_ALL_LEMMAS_SHORTER_THAN = "withLemmasShorterThan";
+
     private static final String STOP_WORDS_FILE_PATH = "customListFilePath";
     private static final String STOP_WORDS_RESOURCES_FILE_PATH = "customListResourcesFilePath";
     private static final String STOP_WORDS_LIST = "customList";
 
     Set<String> stopwords;
-    final boolean checkOnlyLemmas;
-    final Set<String> stopPosCategories;
-    int maximumWordLength = 0;
-    int maximumLemmaLength = 0;
+    boolean checkOnlyLemmas;
+    Set<String> stopPosCategories = new HashSet<>();
+    int minimumWordLength = 0;
+    int minimumLemmaLength = 0;
 
     public StopWordsAnnotator(String name, Properties props) throws IOException {
         this(props);
     }
 
     /**
-     *
      * @param props
      * @throws IOException
      */
@@ -61,22 +61,29 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
         if (props.containsKey(globalPropertyName(STOP_POS_CATEGORIES))) {
             final String[] posCategories = props.getProperty(globalPropertyName(STOP_POS_CATEGORIES)).split(",");
             this.stopPosCategories = Arrays.stream(posCategories)
+                    .map(pc -> pc.trim().toUpperCase())
                     .collect(Collectors.toSet());
-        } else {
-            this.stopPosCategories = new HashSet<>(Arrays.asList(
-                    "IN", "RP", "UH", "MD", "PDT", "POS", "PRP", "SYM", "WDT", "WP", "WRB", "NNP"));
         }
 
         if (props.containsKey(globalPropertyName(STOP_ALL_WORDS_SHORTER_THAN))) {
-            this.maximumWordLength = Integer.parseInt(
+            this.minimumWordLength = Integer.parseInt(
                     props.getProperty(globalPropertyName(STOP_ALL_WORDS_SHORTER_THAN)));
         }
 
         if (props.containsKey(globalPropertyName(STOP_ALL_LEMMAS_SHORTER_THAN))) {
-            this.maximumLemmaLength = Integer.parseInt(
+            this.minimumLemmaLength = Integer.parseInt(
                     props.getProperty(globalPropertyName(STOP_ALL_LEMMAS_SHORTER_THAN)));
         }
 
+        this.initializeStopWordsList(props);
+        // this.stopwords = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
+    }
+
+    private static String globalPropertyName(String privatePropertyName) {
+        return ANNOTATOR_NAME + "." + privatePropertyName;
+    }
+
+    private void initializeStopWordsList(Properties props) throws IOException {
         if (props.containsKey(globalPropertyName(STOP_WORDS_LIST))) {
             final String stopWordsListString = props.getProperty(globalPropertyName(STOP_WORDS_LIST));
             this.stopwords = Arrays.stream(stopWordsListString
@@ -89,30 +96,28 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
             this.stopwords = loadStopWordsFromFile(filePath);
 
         } else if (props.containsKey(globalPropertyName(STOP_WORDS_RESOURCES_FILE_PATH))) {
-            final String filePath = props.getProperty(globalPropertyName(STOP_WORDS_RESOURCES_FILE_PATH));
-            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
-                if (inputStream != null) {
-                    this.stopwords = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                            .lines()
-                            .collect(Collectors.toSet());
-                } else {
-                    throw new IOException("Cannot read stop words resources file: " + filePath);
-                }
-            }
+            final String resourcePath = props.getProperty(globalPropertyName(STOP_WORDS_RESOURCES_FILE_PATH));
+            this.stopwords = loadStopWordsFromResource(resourcePath);
         }
-
-        // this.stopwords = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
     }
 
-    private static String globalPropertyName(String privatePropertyName) {
-        return ANNOTATOR_NAME + "." + privatePropertyName;
-    }
-
-    private static Set<String> loadStopWordsFromFile(String filePathStr) throws IOException {
+    private Set<String> loadStopWordsFromFile(String filePathStr) throws IOException {
         Path filePath = Paths.get(filePathStr);
         return Files.lines(filePath)
                 .map(String::toLowerCase)
                 .collect(Collectors.toSet());
+    }
+
+    private Set<String> loadStopWordsFromResource(String resourcePath) throws IOException {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (inputStream != null) {
+                return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                        .lines()
+                        .collect(Collectors.toSet());
+            } else {
+                throw new IOException("Cannot read stop words resources file: " + resourcePath);
+            }
+        }
     }
 
     @Override
@@ -121,9 +126,9 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
             List<CoreLabel> tokens = annotation.get(CoreAnnotations.TokensAnnotation.class);
             for (CoreLabel token : tokens) {
                 token.set(StopWordsAnnotator.class,
-                        token.word().length() < maximumWordLength ||
-                                token.lemma().length() < maximumLemmaLength ||
-                                stopPosCategories.contains(token.tag()) ||
+                        token.word().length() < minimumWordLength ||
+                                token.lemma().length() < minimumLemmaLength ||
+                                stopPosCategories.contains(token.tag()) || // todo: docs -> make sure users understand that NOT lemma but the word's tag is used
                                 checkWordAndOrLemma(token));
             }
         }
@@ -133,7 +138,7 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
         if (checkOnlyLemmas) {
             return stopwords.contains(token.lemma().toLowerCase());
         } else {
-            return stopwords.contains(token.word().toLowerCase()) ||
+            return stopwords.contains(token.word().toLowerCase()) || // todo: check lemmas first?
                     stopwords.contains(token.lemma().toLowerCase());
         }
     }
