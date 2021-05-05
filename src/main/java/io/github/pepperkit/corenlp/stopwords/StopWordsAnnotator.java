@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -103,9 +104,9 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
 
     private Set<String> loadStopWordsFromFile(String filePathStr) throws IOException {
         Path filePath = Paths.get(filePathStr);
-        return Files.lines(filePath)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+        try (Stream<String> s = Files.lines(filePath)) {
+            return s.map(String::toLowerCase).collect(Collectors.toSet());
+        }
     }
 
     private Set<String> loadStopWordsFromResource(String resourcePath) throws IOException {
