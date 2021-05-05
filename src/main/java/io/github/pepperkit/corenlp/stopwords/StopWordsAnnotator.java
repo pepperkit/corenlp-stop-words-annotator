@@ -128,7 +128,8 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
                 token.set(StopWordsAnnotator.class,
                         token.word().length() < minimumWordLength ||
                                 token.lemma().length() < minimumLemmaLength ||
-                                stopPosCategories.contains(token.tag()) || // todo: docs -> make sure users understand that NOT lemma but the word's tag is used
+                                // todo: docs -> make sure users understand that NOT lemma but the word's tag is used
+                                stopPosCategories.contains(token.tag()) ||
                                 checkWordAndOrLemma(token));
             }
         }
