@@ -6,7 +6,7 @@
 
     <groupId>io.github.pepperkit</groupId>
     <artifactId>corenlp-stop-words-annotator</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <name>CoreNLP Stop Words Annotator</name>
 
     <properties>
