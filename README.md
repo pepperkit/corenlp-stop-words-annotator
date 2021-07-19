@@ -29,13 +29,13 @@ Let's use *stopwords* annotator for a particular scenario when we need to proces
 
 **Scenario**:
 
-Given I have the text  
-And the stop words are defined in the resources file (containing the most common English words)  
-When I launch text processing using StanfordCoreNLP pipeline with StopWordsAnnotator  
-And set it to mark words as stopped if it is shorter than 3 letters (to remove all the punctuation and simple words like be, so, etc.)  
-And is of POS category I am not interested in  
-And is in the list of stop words I provided in the resources file  
-Then I should be able to filter out the common words from the text  
+*Given* I have the text  
+  *And* the stop words are defined in the resources file (containing the most common English words)  
+*When* I launch text processing using StanfordCoreNLP pipeline with StopWordsAnnotator  
+  *And* set it to mark words as stopped if it is shorter than 3 letters (to remove all the punctuation and simple words like be, so, etc.)  
+  *And* is of POS category I am not interested in  
+  *And* is in the list of stop words I provided in the resources file  
+*Then* I should be able to filter out the common words from the text  
 
 ```java
 class Example {
