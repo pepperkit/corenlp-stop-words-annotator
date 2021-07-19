@@ -14,11 +14,11 @@ class StopWordsAnnotatorIT {
     /**
      * Scenario: The common words are filtered out from the text based on StopWordsAnnotator work
      *     Given I have the text
-     *     And the stop words are defined in the resources file (containing the most common english words)
+     *     And the stop words are defined in the resources file (containing the most common English words)
      *     When I launch text processing using StanfordCoreNLP pipeline with StopWordsAnnotator
-     *     And set it to mark words as stopped if it is shorter than 3 letters (to remove all the punctuation and simple words like be, so etc.)
+     *     And set it to mark words as stopped if it is shorter than 3 letters (to remove all the punctuation and simple words like be, so, etc.)
      *     And is of POS category I am not interested in
-     *     And is in the list of stop words I provided in the file
+     *     And is in the list of stop words I provided in the resources file
      *     Then I should be able to filter out the common words from the text
      */
     @Test
@@ -30,11 +30,11 @@ class StopWordsAnnotatorIT {
                 " never wear anything else; so she was always called 'Little Red Riding Hood.'";
 
         // I want to get the list of lemmas created from the text, excluding words from the provided list and all the
-        // common or simple words (like propositions, conjunctions etc.), since I want to extract only the words
+        // common or simple words (like propositions, conjunctions, etc.), since I want to extract only the words
         // I could be interested to learn
         String[] expectedWords = {"dear", "look", "have", "give", "riding", "hood", "velvet", "suit", "wear", "call"};
 
-        // And the stop words in resources (containing the most known english words)
+        // And the stop words in resources (containing the most known English words)
         final String stopWordsResourcePath = "common-words-list-it.txt";
 
         final Properties props;
@@ -43,7 +43,7 @@ class StopWordsAnnotatorIT {
         props.setProperty("customAnnotatorClass.stopwords", "io.github.pepperkit.corenlp.stopwords.StopWordsAnnotator");
         props.setProperty("ssplit.isOneSentence", "true");
 
-        // to filter out all the punctuation and simple words like be, so etc.
+        // to filter out all the punctuation and simple words like be, so, etc.
         props.setProperty("stopwords.withLemmasShorterThan", "3");
 
         // to filter out all the common and simple words
