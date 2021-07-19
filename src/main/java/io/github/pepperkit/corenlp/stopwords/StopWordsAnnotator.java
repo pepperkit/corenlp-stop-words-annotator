@@ -20,19 +20,14 @@ import edu.stanford.nlp.pipeline.Annotator;
 import edu.stanford.nlp.util.ArraySet;
 
 /**
- * Stop words CoreNLP Annotator.
- * Uses several settings and chosen or specified list of stop words in text processing.
+ * Annotator for CoreNLP library, allows to add the set of rules or/and the word themselves, which should be filtered
+ * out in the CoreNLP pipeline processing.
  */
 public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
 
-    // private static final Logger logger = LoggerFactory.getLogger(StopWordsAnnotator.class);
-
-    /**
-     *
-     */
+    /** This name is used to identify the annotator. */
     public static final String ANNOTATOR_NAME = "stopwords";
 
-    private static final String CHECK_ONLY_LEMMAS_PROPERTY = "checkOnlyLemmas"; // todo: do we need it at all?
     private static final String STOP_POS_CATEGORIES = "withPosCategories";
     private static final String STOP_ALL_WORDS_SHORTER_THAN = "shorterThan";
     private static final String STOP_ALL_LEMMAS_SHORTER_THAN = "withLemmasShorterThan";
@@ -42,23 +37,39 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
     private static final String STOP_WORDS_LIST = "customList";
 
     Set<String> stopwords;
-    boolean checkOnlyLemmas;
     Set<String> stopPosCategories = new HashSet<>();
     int minimumWordLength = 0;
     int minimumLemmaLength = 0;
 
+    /**
+     * Constructs a new StopWordsAnnotator with the specified annotator's name and properties
+     * ({@link StopWordsAnnotator#StopWordsAnnotator(Properties)}).
+     * @param name annotator's name
+     * @param props properties for the annotator
+     * @throws IOException if the list of stop words is specified in a file and the file cannot be read
+     */
     public StopWordsAnnotator(String name, Properties props) throws IOException {
         this(props);
     }
 
     /**
-     * @param props
-     * @throws IOException
+     * Constructs a new StopWordsAnnotator with the specified properties.
+     * Accepted properties are:
+     * <ul>
+     *     <li>provided list of particular words (and/or its lemmas) using a string containing comma-separated words, or
+     *     a file with newline-separated words (from any place in the file system or from a bundled resource) -
+     *     `stopwords.customList`, `stopwords.customListFilePath`, and `stopwords.customListResourcesFilePath`
+     *     properties (if all of the properties are provided, only one list of words will be initialized from a provided
+     *     property, the order of precedence: string with words, from a file, from a bundled resource);</li>
+     *     <li>POS (part-of-speech) categories as a string containing a comma-separated list of the categories -
+     *     `stopwords.withPosCategories` property;</li>
+     *     <li>the length of a word or its lemma - `stopwords.shorterThan` and `stopwords.withLemmasShorterThan`
+     *     properties.</li>
+     * </ul>
+     * @param props properties for the annotator
+     * @throws IOException if the list of stop words is specified in a file and the file cannot be read
      */
     public StopWordsAnnotator(Properties props) throws IOException {
-        this.checkOnlyLemmas = Boolean.parseBoolean(
-                props.getProperty(globalPropertyName(CHECK_ONLY_LEMMAS_PROPERTY), "true"));
-
         if (props.containsKey(globalPropertyName(STOP_POS_CATEGORIES))) {
             final String[] posCategories = props.getProperty(globalPropertyName(STOP_POS_CATEGORIES)).split(",");
             this.stopPosCategories = Arrays.stream(posCategories)
@@ -77,7 +88,6 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
         }
 
         this.initializeStopWordsList(props);
-        // this.stopwords = StopAnalyzer.ENGLISH_STOP_WORDS_SET;
     }
 
     private static String globalPropertyName(String privatePropertyName) {
@@ -129,7 +139,6 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
                 token.set(StopWordsAnnotator.class,
                         token.word().length() < minimumWordLength ||
                                 token.lemma().length() < minimumLemmaLength ||
-                                // todo: docs -> make sure users understand that NOT lemma but the word's tag is used
                                 stopPosCategories.contains(token.tag()) ||
                                 checkWordAndOrLemma(token));
             }
@@ -137,12 +146,7 @@ public class StopWordsAnnotator implements Annotator, CoreAnnotation<Boolean> {
     }
 
     private boolean checkWordAndOrLemma(CoreLabel token) {
-        if (checkOnlyLemmas) {
-            return stopwords.contains(token.lemma().toLowerCase());
-        } else {
-            return stopwords.contains(token.word().toLowerCase()) || // todo: check lemmas first?
-                    stopwords.contains(token.lemma().toLowerCase());
-        }
+            return stopwords.contains(token.lemma().toLowerCase()) || stopwords.contains(token.word().toLowerCase());
     }
 
     @Override

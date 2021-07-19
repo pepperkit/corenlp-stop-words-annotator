@@ -18,23 +18,6 @@ import static org.mockito.Mockito.*;
 
 class StopWordsAnnotatorTest {
     @Test
-    public void createCheckOnlyLemmasPropIsSetUpIfProvided() throws IOException {
-        final Properties props = new Properties();
-        props.put("stopwords.checkOnlyLemmas", "false");
-        StopWordsAnnotator annotator = new StopWordsAnnotator(props);
-
-        assertFalse(annotator.checkOnlyLemmas);
-    }
-
-    @Test
-    public void createCheckOnlyLemmasPropIsDefaultTrueIfNotProvided() throws IOException {
-        final Properties props = new Properties();
-        StopWordsAnnotator annotator = new StopWordsAnnotator(props);
-
-        assertTrue(annotator.checkOnlyLemmas);
-    }
-
-    @Test
     public void stopPosCategoriesPropIsSetUpIfProvided() throws IOException {
         final Properties props = new Properties();
         props.put("stopwords.withPosCategories", "IN,WDT");
@@ -137,7 +120,6 @@ class StopWordsAnnotatorTest {
     @Test
     public void wordIsStoppedIfPresentInStopList() throws IOException {
         StopWordsAnnotator annotator = new StopWordsAnnotator(new Properties());
-        annotator.checkOnlyLemmas = false;
         annotator.stopwords = new HashSet<>(Collections.singletonList("words"));
 
         Annotation annotation = mock(Annotation.class);
@@ -147,22 +129,6 @@ class StopWordsAnnotatorTest {
 
         annotator.annotate(annotation);
         verify(wordToStop, times(1)).set(StopWordsAnnotator.class, true);
-        verify(regularWord, times(1)).set(StopWordsAnnotator.class, false);
-    }
-
-    @Test
-    public void wordIsNotStoppedIfPresentInStopListAndOnlyLemmasAreChecked() throws IOException {
-        StopWordsAnnotator annotator = new StopWordsAnnotator(new Properties());
-        annotator.checkOnlyLemmas = true;
-        annotator.stopwords = new HashSet<>(Collections.singletonList("words"));
-
-        Annotation annotation = mock(Annotation.class);
-        CoreLabel wordToStop = mockWordToStopToken();
-        CoreLabel regularWord = mockRegularWordToken();
-        when(annotation.get(any())).thenReturn(Arrays.asList(wordToStop, regularWord));
-
-        annotator.annotate(annotation);
-        verify(wordToStop, times(1)).set(StopWordsAnnotator.class, false);
         verify(regularWord, times(1)).set(StopWordsAnnotator.class, false);
     }
 
