@@ -63,7 +63,7 @@
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <checkstyle-plugin.version>3.1.1</checkstyle-plugin.version>
         <checkstyle.url>https://raw.githubusercontent.com/pepperkit/checkstyle/master/checkstyle.xml</checkstyle.url>
-        <jacoco-plugin.version>0.8.6</jacoco-plugin.version>
+        <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 
         <itest-name-template>**/*IT.java</itest-name-template>
     </properties>
