@@ -59,7 +59,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
-        <checkstyle-plugin.version>3.1.1</checkstyle-plugin.version>
+        <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
         <checkstyle.url>https://raw.githubusercontent.com/pepperkit/checkstyle/master/checkstyle.xml</checkstyle.url>
         <jacoco-plugin.version>0.8.6</jacoco-plugin.version>
 
