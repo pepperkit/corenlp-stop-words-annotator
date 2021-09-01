@@ -62,7 +62,7 @@
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <checkstyle-plugin.version>3.1.2</checkstyle-plugin.version>
-        <checkstyle.url>https://raw.githubusercontent.com/pepperkit/checkstyle/master/checkstyle.xml</checkstyle.url>
+        <checkstyle.url>https://raw.githubusercontent.com/pepperkit/checkstyle/v1.0.0-8.45/checkstyle.xml</checkstyle.url>
         <jacoco-plugin.version>0.8.7</jacoco-plugin.version>
 
         <itest-name-template>**/*IT.java</itest-name-template>
@@ -156,7 +156,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>8.39</version>
+                        <version>8.45.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
