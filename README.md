@@ -11,6 +11,28 @@ Annotator for CoreNLP library, allows adding the set of rules or/and the word th
 CoreNLP pipeline processing.
 
 ## Usage
+
+Just add the annotator and CoreNLP library with models into the dependencies list like this:
+```xml
+        <dependency>
+            <groupId>io.github.pepperkit</groupId>
+            <artifactId>corenlp-stop-words-annotator</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>4.2.2</version>
+            <classifier>models</classifier>
+        </dependency>
+```
+
 The annotator marks the words as stopped using one of the following rules (which can be configured via properties):
 - provided list of particular words (and/or its lemmas) using a string containing comma-separated words, or a file with newline-separated 
   words (from any place in the file system or from a bundled resource) - `stopwords.customList`, `stopwords.customListFilePath`, 
