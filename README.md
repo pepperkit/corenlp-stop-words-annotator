@@ -1,4 +1,6 @@
 # CoreNLP Stop Words Annotator
+
+![StopWordsAnnotator](https://img.shields.io/badge/CoreNLP%20Compatible-v4.3-blue)
 [![Java CI with Maven](https://github.com/pepperkit/corenlp-stop-words-annotator/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/pepperkit/corenlp-stop-words-annotator/actions/workflows/maven.yml)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pepperkit_corenlp-stop-words-annotator&metric=coverage)](https://sonarcloud.io/dashboard?id=pepperkit_corenlp-stop-words-annotator)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pepperkit_corenlp-stop-words-annotator&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pepperkit_corenlp-stop-words-annotator)
