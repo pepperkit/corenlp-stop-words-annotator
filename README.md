@@ -11,7 +11,6 @@ Annotator for CoreNLP library, allows adding the set of rules or/and the word th
 CoreNLP pipeline processing.
 
 ## Usage
-
 Just add the annotator and CoreNLP library with models into the dependencies list like this:
 ```xml
         <dependency>
@@ -33,7 +32,7 @@ Just add the annotator and CoreNLP library with models into the dependencies lis
         </dependency>
 ```
 
-The annotator marks the words as stopped using one of the following rules (which can be configured via properties):
+The annotator is configured with `Properties`, it marks the words as stopped using one of the following rules:
 - provided list of particular words (and/or its lemmas) using a string containing comma-separated words, or a file with newline-separated 
   words (from any place in the file system or from a bundled resource) - `stopwords.customList`, `stopwords.customListFilePath`, 
   and `stopwords.customListResourcesFilePath` properties (if all of the properties are provided, only one list of words
@@ -41,14 +40,52 @@ The annotator marks the words as stopped using one of the following rules (which
 - POS (part-of-speech) categories (of words lemmas) as a string containing a comma-separated list of the categories - `stopwords.withPosCategories` property;
 - the length of a word or its lemma - `stopwords.shorterThan` and `stopwords.withLemmasShorterThan` properties.
 
+Description of the available POS categories can be found here (also see complex example below):
+ - https://nlp.stanford.edu/software/pos-tagger-faq.html
+ - https://catalog.ldc.upenn.edu/docs/LDC99T42/tagguid1.pdf
+
 ### Requirements
 - Java version should be 8 or higher;
 - annotator should be added at the project's POM as a dependency;
 - CoreNLP library should be present in the classpath;
 - *tokenize*, *ssplit*, *pos*, and *lemma* annotators should be present in the pipeline before *stopwords* annotator.
 
-### Example
-Let's use *stopwords* annotator for a particular scenario when we need to process a text and extract a set of lemmas of only 
+### Simple Example
+If we just want to filter out the words from a list of stop words, we can easily do it like following:
+```java
+class Example {
+    public Set<String> getInterestingWords() {
+        final String text = "Once upon a time there was a dear little girl who was loved by everyone who looked at her";
+        
+        final Properties props;
+        props = new Properties();
+        props.put("annotators", "tokenize, ssplit, pos, lemma, stopwords");
+        props.setProperty("customAnnotatorClass.stopwords", "io.github.pepperkit.corenlp.stopwords.StopWordsAnnotator");
+        props.setProperty("ssplit.isOneSentence", "true");
+        
+        // Filter out these words
+        props.setProperty("stopwords.customList", "once,upon,a,little,girl");
+
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        Annotation document = new Annotation(text);
+        pipeline.annotate(document);
+
+        Set<String> result = new HashSet<>();
+        List<CoreLabel> tokens = document.get(CoreAnnotations.TokensAnnotation.class);
+
+        for (CoreLabel token : tokens) {
+            // token.get(StopWordsAnnotator.class) will be TRUE if the word is stopped
+            if (!token.get(StopWordsAnnotator.class)) {
+                result.add(token.get(CoreAnnotations.LemmaAnnotation.class));
+            }
+        }
+        return result;
+    }
+}
+```
+
+### Complex Example
+Let's use *stopwords* annotator for a particular complex scenario when we need to process a text and extract a set of lemmas of only 
 "interesting" words, where the word is considered "interesting", if it is not a common word (more detailed definition is further in the text).
 
 **Scenario**:
