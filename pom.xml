@@ -6,7 +6,7 @@
 
     <groupId>io.github.pepperkit</groupId>
     <artifactId>corenlp-stop-words-annotator</artifactId>
-    <version>0.9.0</version>
+    <version>1.0.0</version>
     <name>CoreNLP Stop Words Annotator</name>
     <description>Annotator for CoreNLP library, allows to add the set of rules or/and the word themselves, which should be filtered out in the CoreNLP pipeline processing.</description>
     <url>https://github.com/pepperkit</url>

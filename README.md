@@ -16,7 +16,7 @@ Just add the annotator and CoreNLP library with models into the dependencies lis
         <dependency>
             <groupId>io.github.pepperkit</groupId>
             <artifactId>corenlp-stop-words-annotator</artifactId>
-            <version>0.9.0</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
