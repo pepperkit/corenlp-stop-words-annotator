@@ -264,6 +264,24 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>io.github.pepperkit</groupId>
+                <artifactId>git-hooks-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>init</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <hooks>
+                        <pre-push>mvn -B checkstyle:checkstyle &amp;&amp; mvn -B verify</pre-push>
+                    </hooks>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
