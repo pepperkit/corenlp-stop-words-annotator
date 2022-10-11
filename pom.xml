@@ -72,7 +72,7 @@
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.1</version>
         </dependency>
 
         <!-- Testing -->
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.1</version>
             <classifier>models</classifier>
             <scope>test</scope>
         </dependency>
@@ -239,7 +239,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
