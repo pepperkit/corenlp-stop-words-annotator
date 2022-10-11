@@ -55,7 +55,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <!-- Test Dependencies -->
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.1</version>
         </dependency>
 
         <!-- Testing -->
@@ -239,7 +239,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
