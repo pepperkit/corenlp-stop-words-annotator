@@ -97,13 +97,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.22.0</version>
+            <version>3.23.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.1</version>
             <classifier>models</classifier>
             <scope>test</scope>
         </dependency>
@@ -156,7 +156,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>10.3</version>
+                        <version>10.3.4</version>
                     </dependency>
                 </dependencies>
                 <configuration>
